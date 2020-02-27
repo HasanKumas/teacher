@@ -2,12 +2,15 @@ package com.teacher.teacher.controllers;
 
 import com.teacher.teacher.models.Course;
 import com.teacher.teacher.repositories.CourseRepository;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+
 @RestController
-@RequestMapping("api/course")//end point
+@RequestMapping("api/courses")//end point
 public class CourseController {
     @Autowired//connect to database
     private CourseRepository courseRepository;
@@ -23,13 +26,18 @@ public class CourseController {
     }
 
     @DeleteMapping("/{id}")
-    void deleteCourse(@PathVariable Long id) {
+    public void deleteCourse(@PathVariable Long id) {
         courseRepository.deleteById(id);
     }
 
     @PutMapping("/{id}")
-    public void updateCourse(@PathVariable("id") Long id,  @RequestBody Course course) {
-        course.setId(id);
-        courseRepository.save(course);
+    public void updateCourse(@PathVariable("id") Long id,  @RequestBody Course course) throws NotFoundException{
+        Optional<Course> originalCourse =courseRepository.findById(id);
+        if(!originalCourse.isPresent()) {
+            throw new NotFoundException("Course not found");
+        }
+
+            course.setId(id);
+            courseRepository.save(course);
     }
 }
