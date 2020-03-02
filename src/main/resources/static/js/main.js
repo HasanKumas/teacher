@@ -11,23 +11,29 @@ function getCourses() {
 }
 
 function displayTeachers(teachers) {
-     var teacherCourseContainer = $('#teacherCourseContainer');
-     teacherCourseContainer.empty();
-     $('#teacherCourseContainer').append('<thead><tr><th>Id</th><th>Name</th></tr></thead>');
+     $('#teacherCourseHeadContainer').empty();
+     $('#teacherCourseBodyContainer').empty();
+
+     $('#teacherCourseHeadContainer').html("<b>Teachers Table</b>");
+     $('#teacherCourseHeadContainer').append('<tr><th>Id</th><th>Name</th><th>Actions</th></tr>');
      $.each(teachers, function(index, teacher) {
-     $('#teacherCourseContainer').append('<tr><td>' + teacher.id + '</td>' + '<td>' +
-        teacher.name + '</td></tr>');
+        $('#teacherCourseBodyContainer').append('<tr><td>' + teacher.id + '</td><td>' +  teacher.name +
+            '</td><td><button class = "remove-button" teacherId = " ' + teacher.id + ' " >Delete </button></td></tr>');
      });
+     $("#teacherCourseBodyContainer .remove-button").click(removeTeacher);
 }
 
 function displayCourses(courses) {
-     var teacherCourseContainer = $('#teacherCourseContainer');
-     teacherCourseContainer.empty();
-     $('#teacherCourseContainer').append('<thead><tr><th>Id</th><th>Name</th><th>Teacher Name</th></tr></thead>');
+     $('#teacherCourseHeadContainer').empty();
+     $('#teacherCourseBodyContainer').empty();
+
+     $('#teacherCourseHeadContainer').html('<b>Courses Table</b>');
+     $('#teacherCourseHeadContainer').append('<tr><th>Id</th><th>Name</th><th>Teacher Name</th><th>Actions</th></tr>');
      $.each(courses, function(index, course) {
-         $('#teacherCourseContainer').append('<tr><td>' + course.id + '</td>' + '<td>' +
-         course.name + '</td><td>' + course.teacher.name + '</td></tr>');
+         $('#teacherCourseBodyContainer').append('<tr><td>' + course.id + '</td>' + '<td>' +
+         course.name + '</td><td>' + course.teacher.name + '</td><td><button class = "remove-button" courseId = " ' + course.id + ' " >Delete </button></td></tr>');
      });
+     $("#teacherCourseBodyContainer .remove-button").click(removeCourse);
 }
 
 function postTeacher(teacher){
@@ -39,6 +45,9 @@ function postTeacher(teacher){
         data: jsonTeacher,
         success: function() {
             alert('We created a new teacher..');
+            $('#teacherNameInput').val(" ")
+            getTeachers();
+            selectTeachers();
         },
         error: function() {
             alert('Something went wrong..');
@@ -90,6 +99,7 @@ function postCourse(course){
         data: jsonCourse,
         success: function() {
             alert('We created a new course..');
+            $('#courseNameInput').val(" ")
             getCourses()
         },
         error: function() {
@@ -99,6 +109,7 @@ function postCourse(course){
 }
 
 function selectTeachers() {
+    $('#teacherSelect').empty();
     $.get('api/teachers', function(teachers){
            $.each(teachers, function(index, teacher) {
                 $('#teacherSelect').append('<option value = " ' + teacher.id + ' " >' +
@@ -106,6 +117,39 @@ function selectTeachers() {
            });
     });
 
+}
+
+function removeTeacher() {
+    var teacherId = $(this).attr('teacherId');
+
+    $.ajax({
+        url: 'api/teachers/'+ teacherId,
+        type: 'DELETE',
+        success: function(){
+            alert('teacher ' + teacherId + ' deleted!');
+            getTeachers();
+            selectTeachers();
+        },
+        error: function(){
+            alert('Something went wrong..Check if the teacher registered to a course. If registered then first delete related course to be able to delete the teacher..');
+        }
+    });
+}
+
+function removeCourse() {
+    var courseId = $(this).attr('courseId');
+
+    $.ajax({
+        url: 'api/courses/'+ courseId,
+        type: 'DELETE',
+        success: function(){
+            alert('course ' + courseId + ' deleted!');
+            getCourses();
+        },
+        error: function(){
+            alert('Something went wrong...');
+        }
+    });
 }
 
 $(document).ready(function () {

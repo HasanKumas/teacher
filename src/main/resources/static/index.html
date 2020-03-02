@@ -12,16 +12,22 @@
     <title>Front End Assignment</title>
 </head>
 <body>
+<div class="container">
 <h1>Front End Assignment for Teachers and Courses</h1>
 <button id="getTeachersButton" type="button" class="btn btn-primary btn-lg">Show Teachers</button>
 <button id="getCoursesButton" type="button" class="btn btn-primary btn-lg">Show Courses</button>
 <br>
 <br>
-<table id="teacherCourseContainer" border="1">
-    <tbody >
+
+<table  id="tables" border="1">
+    <thead id="teacherCourseHeadContainer">
+
+    </thead>
+    <tbody id="teacherCourseBodyContainer">
 
     </tbody>
 </table>
+<br>
 <form>
     <h2>Teacher Form</h2>
     <label for="teacherNameInput">Name: </label>
@@ -29,7 +35,7 @@
     <br>
     <button id="createTeacherButton" type="button" class="btn btn-success btn-lg">Create teacher</button>
 </form>
-
+<br>
 <form>
     <h2>Course Form</h2>
     <label for="courseNameInput">Course Name: </label>
@@ -39,6 +45,6 @@
     <br>
     <button id="createCourseButton" type="button" class="btn btn-success btn-lg">Create course</button>
 </form>
-
+</div>
 </body>
 </html>
